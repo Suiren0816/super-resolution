@@ -8,6 +8,39 @@ import math
 import torchvision.models as models
 
 
+class SelfAttention(nn.Module):
+    """ 自注意力层  """
+
+    def __init__(self, in_dim):
+        super(SelfAttention, self).__init__()
+        self.query_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 8, kernel_size=1)
+        self.key_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 8, kernel_size=1)
+        self.value_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim, kernel_size=1)
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+        self.softmax = nn.Softmax(dim=-1)  #
+
+    def forward(self, x):
+        """
+            输入 :
+                x : 输入特征图，张量表示，大小为 (N, 3, w * scaling factor, h * scaling factor)
+            返回 :
+                out : 经过自注意力机制处理后的特征图，表示为张量，大小和输入特征图相同
+                attention: 是注意力矩阵，大小为(N, N, w * h)
+        """
+        m_batchsize, C, width, height = x.size()
+        proj_query = self.query_conv(x).view(m_batchsize, -1, width * height).permute(0, 2, 1)  # B X CX(N)
+        proj_key = self.key_conv(x).view(m_batchsize, -1, width * height)  # B X C x (*W*H)
+        energy = torch.bmm(proj_query, proj_key)  # transpose check
+        attention = self.softmax(energy)  # BX (N) X (N)
+        proj_value = self.value_conv(x).view(m_batchsize, -1, width * height)  # B X C X N
+
+        out = torch.bmm(proj_value, attention.permute(0, 2, 1))
+        out = out.view(m_batchsize, C, width, height)
+
+        out = self.gamma * out + x
+        return out, attention
+
 class ConvolutionalBlock(nn.Module):
     """
     卷积模块,由卷积层, BN归一化层, 激活层构成.
@@ -112,11 +145,11 @@ class ResidualBlock(nn.Module):
 
         # 第一个卷积块
         self.conv_block1 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels, kernel_size=kernel_size,
-                                              batch_norm=True, activation='PReLu')
+                                              batch_norm=False, activation='PReLu')
 
         # 第二个卷积块
         self.conv_block2 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels, kernel_size=kernel_size,
-                                              batch_norm=True, activation=None)
+                                              batch_norm=False, activation=None)
 
     def forward(self, input):
         """
@@ -162,7 +195,7 @@ class SRResNet(nn.Module):
         # 第二个卷积块
         self.conv_block2 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels,
                                               kernel_size=small_kernel_size,
-                                              batch_norm=True, activation=None)
+                                              batch_norm=False, activation=None)
 
         # 放大通过子像素卷积模块实现, 每个模块放大两倍
         n_subpixel_convolution_blocks = int(math.log2(scaling_factor))
@@ -208,6 +241,8 @@ class Generator(nn.Module):
         super(Generator, self).__init__()
         self.net = SRResNet(large_kernel_size=large_kernel_size, small_kernel_size=small_kernel_size,
                             n_channels=n_channels, n_blocks=n_blocks, scaling_factor=scaling_factor)
+        # 加入自注意力层
+        self.attention = SelfAttention(in_dim=3)
 
     def forward(self, lr_imgs):
         """
@@ -216,9 +251,13 @@ class Generator(nn.Module):
         参数 lr_imgs: 低精度图像 (N, 3, w, h)
         返回: 超分重建图像 (N, 3, w * scaling factor, h * scaling factor)
         """
+        lr_imgs, attention = self.attention(lr_imgs)
+
         sr_imgs = self.net(lr_imgs)  # (N, n_channels, w * scaling factor, h * scaling factor)
 
-        return sr_imgs
+        perceptual_features = self.vgg(sr_imgs)
+
+        return sr_imgs,perceptual_features
 
 
 class Discriminator(nn.Module):
@@ -256,6 +295,9 @@ class Discriminator(nn.Module):
 
         self.fc2 = nn.Linear(1024, 1)
 
+        # 加入自注意力层
+        self.attention = SelfAttention(in_dim=3)
+
         # 最后不需要添加sigmoid层，因为PyTorch的nn.BCEWithLogitsLoss()已经包含了这个步骤
 
     def forward(self, imgs):
@@ -265,6 +307,7 @@ class Discriminator(nn.Module):
         参数 imgs: 用于作判别的原始高清图或超分重建图，张量表示，大小为(N, 3, w * scaling factor, h * scaling factor)
         返回: 一个评分值， 用于判断一副图像是否是高清图, 张量表示，大小为 (N)
         """
+        lr_imgs, attention = self.attention(imgs)
         batch_size = imgs.size(0)
         output = self.conv_blocks(imgs)
         output = self.adaptive_pool(output)
@@ -325,3 +368,4 @@ class TruncatedVGG19(nn.Module):
         output = self.truncated_vgg19(input)  # (N, feature_map_channels, feature_map_w, feature_map_h)
 
         return output
+

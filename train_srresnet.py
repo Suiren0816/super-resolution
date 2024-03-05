@@ -118,7 +118,7 @@ def main():
                 writer.add_image('SRResNet/epoch_'+str(epoch)+'_3', make_grid(hr_imgs[:4,:3,:,:].cpu(), nrow=4, normalize=True),epoch)
 
             # 打印结果
-            print("第 "+str(i)+ " 个batch训练结束")
+            # print("第 "+str(i)+ " 个batch训练结束")
  
         # 手动释放内存              
         del lr_imgs, hr_imgs, sr_imgs
@@ -132,6 +132,8 @@ def main():
             'model': model.state_dict(),
             'optimizer': optimizer.state_dict()
         }, 'results/checkpoint_srresnet.pth')
+
+        print("epoch " + str(epoch) + "train finished!")
     
     # 训练结束关闭监控
     writer.close()
