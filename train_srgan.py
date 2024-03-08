@@ -13,7 +13,7 @@ from utils import *
 
 # 数据集参数
 data_folder = './data/'    # 数据存放路径
-crop_size = 64             # 高分辨率图像裁剪尺寸
+crop_size = 96             # 高分辨率图像裁剪尺寸
 scaling_factor = 4         # 放大比例
 
 # 生成器模型参数(与SRResNet相同)
