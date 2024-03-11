@@ -13,7 +13,7 @@ class ConvolutionalBlock(nn.Module):
     卷积模块,由卷积层, BN归一化层, 激活层构成.
     """
 
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, batch_norm=False, activation=None):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None):
         """
         :参数 in_channels: 输入通道数
         :参数 out_channels: 输出通道数
@@ -37,8 +37,8 @@ class ConvolutionalBlock(nn.Module):
                       padding=kernel_size // 2))
 
         # 1个BN归一化层
-        if batch_norm is True:
-            layers.append(nn.BatchNorm2d(num_features=out_channels))
+        # if batch_norm is True:
+            # layers.append(nn.BatchNorm2d(num_features=out_channels))
 
         # 1个激活层
         if activation == 'prelu':
@@ -112,11 +112,11 @@ class ResidualBlock(nn.Module):
 
         # 第一个卷积块
         self.conv_block1 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels, kernel_size=kernel_size,
-                                              batch_norm=False, activation='PReLu')
+                                            activation='PReLu')
 
         # 第二个卷积块
         self.conv_block2 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels, kernel_size=kernel_size,
-                                              batch_norm=False, activation=None)
+                                              activation=None)
 
     def forward(self, input):
         """
@@ -154,7 +154,7 @@ class SRResNet(nn.Module):
 
         # 第一个卷积块
         self.conv_block1 = ConvolutionalBlock(in_channels=3, out_channels=n_channels, kernel_size=large_kernel_size,
-                                              batch_norm=False, activation='PReLu')
+                                              activation='PReLu')
 
         # 一系列残差模块, 每个残差模块包含一个跳连接
         self.residual_blocks = nn.Sequential(
@@ -163,7 +163,7 @@ class SRResNet(nn.Module):
         # 第二个卷积块
         self.conv_block2 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels,
                                               kernel_size=small_kernel_size,
-                                              batch_norm=False, activation=None)
+                                              activation=None)
 
         # 放大通过子像素卷积模块实现, 每个模块放大两倍
         n_subpixel_convolution_blocks = int(math.log2(scaling_factor))
@@ -173,7 +173,7 @@ class SRResNet(nn.Module):
 
         # 最后一个卷积模块
         self.conv_block3 = ConvolutionalBlock(in_channels=n_channels, out_channels=3, kernel_size=large_kernel_size,
-                                              batch_norm=False, activation='Tanh')
+                                              activation='Tanh')
 
     def forward(self, lr_imgs):
         """
@@ -245,7 +245,7 @@ class Discriminator(nn.Module):
             out_channels = (n_channels if i is 0 else in_channels * 2) if i % 2 is 0 else in_channels
             conv_blocks.append(
                 ConvolutionalBlock(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size,
-                                   stride=1 if i % 2 is 0 else 2, batch_norm=i is not 0, activation='LeakyReLu'))
+                                   stride=1 if i % 2 is 0 else 2, activation='LeakyReLu'))
             in_channels = out_channels
         self.conv_blocks = nn.Sequential(*conv_blocks)
 

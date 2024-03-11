@@ -55,7 +55,7 @@ def main():
 
     # 迁移至默认设备进行训练
     model = model.to(device)
-    criterion = nn.MSELoss().to(device)
+    criterion = nn.SmoothL1Loss().to(device)
 
     # 加载预训练模型
     if checkpoint is not None:
@@ -124,7 +124,7 @@ def main():
         del lr_imgs, hr_imgs, sr_imgs
 
         # 监控损失值变化
-        writer.add_scalar('SRResNet/MSE_Loss', loss_epoch.val, epoch)    
+        writer.add_scalar('SRResNet/SmoothL1_Loss', loss_epoch.val, epoch)
 
         # 保存预训练模型
         torch.save({
@@ -133,7 +133,7 @@ def main():
             'optimizer': optimizer.state_dict()
         }, 'results/checkpoint_srresnet.pth')
 
-        print("epoch " + str(epoch) + "train finished!")
+        print("epoch " + str(epoch) + " train finished!")
     
     # 训练结束关闭监控
     writer.close()

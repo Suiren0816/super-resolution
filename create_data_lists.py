@@ -7,7 +7,7 @@ from utils import create_data_lists
 if __name__ == '__main__':
     create_data_lists(train_folders=['./data/dataset',
                                      './data/dataset2',
-                                     './data/train'],
+                                     './data/dataset3'],
                       test_folders=[
                                     './data/testdata',
                                     './data/test'
