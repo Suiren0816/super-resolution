@@ -135,7 +135,7 @@ class RRDBBlock(nn.Module):
     """
 
     """
-    def __init__(self, in_channels=64, out_channels=32, kernel_size=3):
+    def __init__(self, in_channels=64, out_channels=64, kernel_size=3):
         super(RRDBBlock, self).__init__()
         """"5个卷积层，4个激活层"""
 
@@ -156,7 +156,7 @@ class RRDBBlock(nn.Module):
         x3 = self.lrelu(self.conv3(torch.cat((x, x1, x2), 1)))
         x4 = self.lrelu(self.conv4(torch.cat((x, x1, x2, x3), 1)))
         x5 = self.conv5(torch.cat((x, x1, x2, x3, x4), 1))
-        return x5 * 0.2 + x
+        return x5 * 0.2 + x # error
 
 class RRDB(nn.Module):
     """
@@ -198,8 +198,9 @@ class SRResNet(nn.Module):
                                               activation='PReLu')
 
         # 一系列残差模块, 每个残差模块包含一个跳连接
+        # 替换为Residual in Residual Block
         self.residual_blocks = nn.Sequential(
-            *[RRDBBlock(in_channels=n_channels, out_channels=32, kernel_size=3) for i in range(n_blocks)])
+            *[RRDBBlock(in_channels=n_channels, out_channels=n_channels, kernel_size=3) for i in range(n_blocks)])
 
         # 第二个卷积块
         self.conv_block2 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels,
