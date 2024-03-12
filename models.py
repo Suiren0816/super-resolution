@@ -19,7 +19,6 @@ class ConvolutionalBlock(nn.Module):
         :参数 out_channels: 输出通道数
         :参数 kernel_size: 核大小
         :参数 stride: 步长
-        :参数 batch_norm: 是否包含BN层
         :参数 activation: 激活层类型; 如果没有则为None
         """
         super(ConvolutionalBlock, self).__init__()
@@ -132,6 +131,48 @@ class ResidualBlock(nn.Module):
 
         return output
 
+class RRDBBlock(nn.Module):
+    """
+
+    """
+    def __init__(self, in_channels=64, out_channels=32, kernel_size=3):
+        super(RRDBBlock, self).__init__()
+        """"5个卷积层，4个激活层"""
+
+        self.conv1 = ConvolutionalBlock(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
+        self.conv2 = ConvolutionalBlock(in_channels=in_channels + out_channels, out_channels=out_channels,kernel_size=kernel_size, activation=None)
+        self.conv3 = ConvolutionalBlock(in_channels=in_channels + 2 * out_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
+        self.conv4 = ConvolutionalBlock(in_channels=in_channels + 3 * out_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
+        self.conv5 = ConvolutionalBlock(in_channels=in_channels + 4 * out_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
+        self.lrelu = nn.LeakyReLU(negative_slope=0.2, inplace=True)
+
+
+    """
+    参考ESRGAN论文，residual scaling parameter 设置为0.2
+    """
+    def forward(self,x):
+        x1 = self.lrelu(self.conv1(x))
+        x2 = self.lrelu(self.conv2(torch.cat((x, x1), 1)))
+        x3 = self.lrelu(self.conv3(torch.cat((x, x1, x2), 1)))
+        x4 = self.lrelu(self.conv4(torch.cat((x, x1, x2, x3), 1)))
+        x5 = self.conv5(torch.cat((x, x1, x2, x3, x4), 1))
+        return x5 * 0.2 + x
+
+class RRDB(nn.Module):
+    """
+    参考SERGAN论文设计，结构上相当于替换原来的Residual Block
+    """
+    def __init__(self, in_channels, out_channels=32):
+        super(RRDB,self).__init__()
+        self.RDB1 = RRDBBlock(in_channels, out_channels)
+        self.RDB2 = RRDBBlock(in_channels, out_channels)
+        self.RDB3 = RRDBBlock(in_channels, out_channels)
+    """包含3个RRDB Block"""
+    def forward(self,x):
+        out = self.RDB1(x)
+        out = self.RDB2(out)
+        out = self.RDB3(out)
+        return out * 0.2 + x
 
 class SRResNet(nn.Module):
     """
@@ -158,7 +199,7 @@ class SRResNet(nn.Module):
 
         # 一系列残差模块, 每个残差模块包含一个跳连接
         self.residual_blocks = nn.Sequential(
-            *[ResidualBlock(kernel_size=small_kernel_size, n_channels=n_channels) for i in range(n_blocks)])
+            *[RRDBBlock(in_channels=n_channels, out_channels=32, kernel_size=3) for i in range(n_blocks)])
 
         # 第二个卷积块
         self.conv_block2 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels,
@@ -327,3 +368,6 @@ class TruncatedVGG19(nn.Module):
         output = self.truncated_vgg19(input)  # (N, feature_map_channels, feature_map_w, feature_map_h)
 
         return output
+
+
+
