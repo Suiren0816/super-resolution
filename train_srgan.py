@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 from models import Generator, Discriminator, TruncatedVGG19
 from datasets import SRDataset
 from utils import *
-
+import os
 
 # 数据集参数
 data_folder = './data/'    # 数据存放路径
@@ -198,7 +198,7 @@ def main():
                 writer.add_image('SRGAN/epoch_'+str(epoch)+'_3', make_grid(hr_imgs[:4,:3,:,:].cpu(), nrow=4, normalize=True),epoch)
 
             # 打印结果
-            print("第 "+str(i)+ " 个batch结束")
+            # print("第 "+str(i)+ " 个batch结束")
  
         # 手动释放内存              
         del lr_imgs, hr_imgs, sr_imgs, hr_imgs_in_vgg_space, sr_imgs_in_vgg_space, hr_discriminated, sr_discriminated  # 手工清除掉缓存
@@ -207,6 +207,9 @@ def main():
         writer.add_scalar('SRGAN/Loss_c', losses_c.val, epoch) 
         writer.add_scalar('SRGAN/Loss_a', losses_a.val, epoch)    
         writer.add_scalar('SRGAN/Loss_d', losses_d.val, epoch)    
+
+        # os.system('cls')
+        print("epoch " + str(epoch) + " train finished!")
 
         # 保存预训练模型
         torch.save({

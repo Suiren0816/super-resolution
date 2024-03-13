@@ -36,6 +36,9 @@ ngpu = 1           # 用来运行的gpu数量
 
 cudnn.benchmark = True # 对卷积进行加速
 
+"""
+用tensorboad进行训练结果可视化
+"""
 writer = SummaryWriter() # 实时监控     使用命令 tensorboard --logdir runs  进行查看
 
 def main():
@@ -141,3 +144,67 @@ def main():
 
 if __name__ == '__main__':
     main()
+"""
+啥
+🐎 Wen
+I need NVIDIA 4090!!!
+echo "NIVDIA RTX 4090 IS not unNECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+echo "NIVDIA RTX 4090 IS NECESSARY!!!"
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+给我4090
+就是把你的训练结果可视化
+再怎么用
+就是把你每一轮的训练结果输出出来，tensorboard显示
+
+"""
