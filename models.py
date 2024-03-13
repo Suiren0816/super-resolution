@@ -6,6 +6,7 @@ from torch import nn
 import torchvision
 import math
 import torchvision.models as models
+import os
 
 
 class ConvolutionalBlock(nn.Module):
@@ -156,7 +157,7 @@ class RRDBBlock(nn.Module):
         x3 = self.lrelu(self.conv3(torch.cat((x, x1, x2), 1)))
         x4 = self.lrelu(self.conv4(torch.cat((x, x1, x2, x3), 1)))
         x5 = self.conv5(torch.cat((x, x1, x2, x3, x4), 1))
-        return x5 * 0.2 + x # error
+        return x5 * 0.2 + x # error fixed due to out_channels
 #干啥
 #报错了
 #🐎文！！！
@@ -210,7 +211,7 @@ class SRResNet(nn.Module):
                                               activation='PReLu')
 
         # 一系列残差模块, 每个残差模块包含一个跳连接
-        # 替换为Residual in Residual Block
+        # 替换为Residual in Residual Dense Block
         self.residual_blocks = nn.Sequential(
             *[RRDBBlock(in_channels=n_channels, out_channels=n_channels, kernel_size=3) for i in range(n_blocks)])
 

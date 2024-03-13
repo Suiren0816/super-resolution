@@ -156,7 +156,8 @@ def main():
             # 计算生成损失
             sr_discriminated = discriminator(sr_imgs)  # (batch X 1)   
             adversarial_loss = adversarial_loss_criterion(
-                sr_discriminated, torch.ones_like(sr_discriminated)) # 生成器希望生成的图像能够完全迷惑判别器，因此它的预期所有图片真值为1
+                sr_discriminated, torch.ones_like(sr_discriminated))
+            # 生成器希望生成的图像能够完全迷惑判别器，因此它的预期所有图片真值为1
 
             # 计算总的感知损失
             perceptual_loss = content_loss + beta * adversarial_loss
@@ -179,7 +180,8 @@ def main():
 
             # 二值交叉熵损失
             adversarial_loss = adversarial_loss_criterion(sr_discriminated, torch.zeros_like(sr_discriminated)) + \
-                            adversarial_loss_criterion(hr_discriminated, torch.ones_like(hr_discriminated))  # 判别器希望能够准确的判断真假，因此凡是生成器生成的都设置为0，原始图像均设置为1
+                            adversarial_loss_criterion(hr_discriminated, torch.ones_like(hr_discriminated))
+            # 判别器希望能够准确的判断真假，因此凡是生成器生成的都设置为0，原始图像均设置为1
 
             # 后向传播
             optimizer_d.zero_grad()
