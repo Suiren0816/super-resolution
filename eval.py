@@ -14,7 +14,7 @@ import time
 large_kernel_size = 9   # 第一层卷积和最后一层卷积的核大小
 small_kernel_size = 3   # 中间层卷积的核大小
 n_channels = 64         # 中间层通道数
-n_blocks = 16           # 残差模块数量
+n_blocks = 23           # 残差模块数量
 scaling_factor = 4      # 放大比例
 ngpu = 1                # GPU数量
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     
     # 测试集目录
     data_folder = "./data/"
-    test_data_names = ["testdata"]
+    test_data_names = ["test"]
 
     # 预训练模型
     srgan_checkpoint = "./results/checkpoint_srgan.pth"
@@ -92,6 +92,8 @@ if __name__ == '__main__':
                                             data_range=255.)
                 PSNRs.update(psnr, lr_imgs.size(0))
                 SSIMs.update(ssim, lr_imgs.size(0))
+
+
 
 
         # 输出平均PSNR和SSIM

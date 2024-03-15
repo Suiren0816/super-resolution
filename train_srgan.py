@@ -1,4 +1,4 @@
-    #!/usr/bin/env python
+import time  #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
 import torch.backends.cudnn as cudnn
@@ -28,6 +28,7 @@ kernel_size_d = 3  # 所有卷积模块的核大小
 n_channels_d = 64  # 第1层卷积模块的通道数, 后续每隔1个模块通道数翻倍
 n_blocks_d = 8     # 卷积模块数量
 fc_size_d = 1024  # 全连接层连接数
+
 
 # 学习参数
 batch_size = 64    # 批大小
@@ -116,6 +117,8 @@ def main():
         num_workers=workers,
         pin_memory=True) 
 
+
+    start_time = time.time()
     # 开始逐轮训练
     for epoch in range(start_epoch, epochs+1):
         
@@ -200,7 +203,8 @@ def main():
                 writer.add_image('SRGAN/epoch_'+str(epoch)+'_3', make_grid(hr_imgs[:4,:3,:,:].cpu(), nrow=4, normalize=True),epoch)
 
             # 打印结果
-            # print("第 "+str(i)+ " 个batch结束")
+
+            print("第 "+str(i)+ " 个batch结束。Time used:{:.3f} 秒".format(time.time()-start_time))
  
         # 手动释放内存              
         del lr_imgs, hr_imgs, sr_imgs, hr_imgs_in_vgg_space, sr_imgs_in_vgg_space, hr_discriminated, sr_discriminated  # 手工清除掉缓存
@@ -210,8 +214,12 @@ def main():
         writer.add_scalar('SRGAN/Loss_a', losses_a.val, epoch)    
         writer.add_scalar('SRGAN/Loss_d', losses_d.val, epoch)    
 
+        progress = float(epoch) / float(epochs)
+
         # os.system('cls')
-        print("epoch " + str(epoch) + " train finished!")
+        print("epoch " + str(epoch) + " train finished! \n " +
+                                      "process " + str(progress) +
+                                      "Time used : {:.3f} 秒".format(time.time()-start_time))
 
         # 保存预训练模型
         torch.save({
@@ -228,3 +236,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# 249 batch per epoch

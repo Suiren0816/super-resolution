@@ -24,9 +24,9 @@ n_blocks = 16           # 残差模块数量
 
 # 学习参数
 checkpoint = None   # 预训练模型路径，如果不存在则为None
-batch_size = 100    # 批大小
+batch_size = 64    # 批大小
 start_epoch = 1     # 轮数起始位置
-epochs = 130        # 迭代轮数
+epochs = 128        # 迭代轮数
 workers = 4         # 工作线程数
 lr = 1e-4           # 学习率
 
@@ -121,7 +121,7 @@ def main():
                 writer.add_image('SRResNet/epoch_'+str(epoch)+'_3', make_grid(hr_imgs[:4,:3,:,:].cpu(), nrow=4, normalize=True),epoch)
 
             # 打印结果
-            # print("第 "+str(i)+ " 个batch训练结束")
+            print("第 "+str(i)+ " 个batch训练结束")
  
         # 手动释放内存              
         del lr_imgs, hr_imgs, sr_imgs
@@ -136,6 +136,7 @@ def main():
             'optimizer': optimizer.state_dict()
         }, 'results/checkpoint_srresnet.pth')
 
+        os.system('cls')
         print("epoch " + str(epoch) + " train finished!")
     
     # 训练结束关闭监控
@@ -146,7 +147,7 @@ if __name__ == '__main__':
     main()
 """
 啥
-🐎 Wen
+🐎 屁Wen
 I need NVIDIA 4090!!!
 echo "NIVDIA RTX 4090 IS not unNECESSARY!!!"
 echo "NIVDIA RTX 4090 IS NECESSARY!!!"
@@ -206,5 +207,6 @@ echo "NIVDIA RTX 4090 IS NECESSARY!!!"
 就是把你的训练结果可视化
 再怎么用
 就是把你每一轮的训练结果输出出来，tensorboard显示
-
+4090！!！
+用布洛芬跟老陈换4090
 """

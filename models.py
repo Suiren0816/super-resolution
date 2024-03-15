@@ -158,19 +158,9 @@ class RRDBBlock(nn.Module):
         x4 = self.lrelu(self.conv4(torch.cat((x, x1, x2, x3), 1)))
         x5 = self.conv5(torch.cat((x, x1, x2, x3, x4), 1))
         return x5 * 0.2 + x # error fixed due to out_channels
-#干啥
-#报错了
-#🐎文！！！
-#ohi! 给我个柜子
-#4090哈哈哈哈哈哈哈哈哈
-# 对方正在控制，无法使用鼠标！谁用不了
-# 4090
-""" 4090
-给我4090！
 
 
 
-"""
 class RRDB(nn.Module):
     """
     参考SERGAN论文设计，结构上相当于替换原来的Residual Block

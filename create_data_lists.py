@@ -9,7 +9,6 @@ if __name__ == '__main__':
                                      './data/dataset2',
                                      './data/dataset3'],
                       test_folders=[
-                                    './data/testdata',
                                     './data/test'
                                     ],
                       min_size=100,
