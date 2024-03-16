@@ -6,7 +6,7 @@ import sys
 import torch
 from collections import OrderedDict
 
-alpha = 0.5
+alpha = 0.8
 
 model_srgan_path = './results/checkpoint_srgan.pth'
 model_srresnet_path = './results/checkpoint_srresnet.pth'

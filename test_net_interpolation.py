@@ -16,7 +16,8 @@ n_blocks = 16  # 残差模块数量
 scaling_factor = 4  # 放大比例
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# 插值
+# 插值mawen Mave怎么关闭你的连接，无法关闭 真的吗 真的 怎么关不掉  4090才能关
+
 alpha = debug.alpha
 
 
