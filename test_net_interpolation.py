@@ -1,3 +1,4 @@
+import debug
 from utils import *
 from torch import nn
 from models import SRResNet,Generator
@@ -14,6 +15,10 @@ n_channels = 64  # 中间层通道数
 n_blocks = 16  # 残差模块数量
 scaling_factor = 4  # 放大比例
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# 插值
+alpha = debug.alpha
+
 
 if __name__ == '__main__':
     # 预训练模型
@@ -54,6 +59,6 @@ if __name__ == '__main__':
     with torch.no_grad():
         sr_img = model(lr_img).squeeze(0).cpu().detach()  # (1, 3, w*scale, h*scale), in [-1, 1]
         sr_img = convert_image(sr_img, source='[-1, 1]', target='pil')
-        sr_img.save('./results/test_net_interpolation.png')
+        sr_img.save('./results/test_net_interpolation_alpha_' + alpha + '.png')
 
     print('用时  {:.3f} 秒'.format(time.time() - start))
