@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+# mawen mawenmaw-*- encoding: utf-8 -*-
 
 
 from utils import create_data_lists
@@ -9,6 +9,7 @@ if __name__ == '__main__':
                                      './data/dataset2',
                                      './data/dataset3'],
                       test_folders=[
+                                    './data/testdata',
                                     './data/test'
                                     ],
                       min_size=100,

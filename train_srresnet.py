@@ -1,5 +1,6 @@
 # #!/usr/bin/env python
 # # -*- encoding: utf-8 -*-
+import time
 
 import torch.backends.cudnn as cudnn
 import torch
@@ -80,7 +81,9 @@ def main():
         batch_size=batch_size,
         shuffle=True,
         num_workers=workers,
-        pin_memory=True) 
+        pin_memory=True)
+
+    start_time = time.time()
 
     # 开始逐轮训练
     for epoch in range(start_epoch, epochs+1):
@@ -121,7 +124,7 @@ def main():
                 writer.add_image('SRResNet/epoch_'+str(epoch)+'_3', make_grid(hr_imgs[:4,:3,:,:].cpu(), nrow=4, normalize=True),epoch)
 
             # 打印结果
-            print("第 "+str(i)+ " 个batch训练结束")
+            print("第 "+str(i)+ " 个batch结束。Time used:{:.3f} 秒".format(time.time()-start_time))
  
         # 手动释放内存              
         del lr_imgs, hr_imgs, sr_imgs
@@ -136,8 +139,11 @@ def main():
             'optimizer': optimizer.state_dict()
         }, 'results/checkpoint_srresnet.pth')
 
-        os.system('cls')
-        print("epoch " + str(epoch) + " train finished!")
+        progress = float(epoch) / float(epochs)
+        progress = progress * 100.0
+        print("epoch " + str(epoch) + " train finished! \n " +
+              "process " + str(progress) + "% \n"
+              "Time used : {:.3f} 秒".format(time.time() - start_time))
     
     # 训练结束关闭监控
     writer.close()

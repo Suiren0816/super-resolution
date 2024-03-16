@@ -9,7 +9,7 @@ import time
 from PIL import Image
 
 # 测试图像
-imgPath = './results/test.jpg'
+imgPath = './results/test1.png'
 
 # 模型参数
 large_kernel_size = 9   # 第一层卷积和最后一层卷积的核大小
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # 双线性上采样
     Bicubic_img = img.resize((int(img.width * scaling_factor),int(img.height * scaling_factor)),Image.BICUBIC)
-    Bicubic_img.save('./results/test_bicubic.jpg')
+    Bicubic_img.save('./results/test_bicubic.png')
 
     # 图像预处理
     lr_img = convert_image(img, source='pil', target='imagenet-norm')
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     with torch.no_grad():
         sr_img = model(lr_img).squeeze(0).cpu().detach()  # (1, 3, w*scale, h*scale), in [-1, 1]
         sr_img = convert_image(sr_img, source='[-1, 1]', target='pil')
-        sr_img.save('./results/test_srgan.jpg')
+        sr_img.save('./results/test_srgan.png')
 
     print('用时  {:.3f} 秒'.format(time.time()-start))
 
