@@ -1,6 +1,6 @@
 from utils import *
 from torch import nn
-from models import SRResNet
+from models import SRResNet,Generator
 import time
 from PIL import Image
 
@@ -17,20 +17,20 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
     # 预训练模型
-    srresnet_checkpoint = "./results/checkpoint_srresnet.pth"
+    interpolation_checkpoint = "./results/checkpoint_model5.pth"
 
     # 加载模型SRResNet 或 SRGAN
-    checkpoint = torch.load(srresnet_checkpoint)
-    srresnet = SRResNet(large_kernel_size=large_kernel_size,
-                        small_kernel_size=small_kernel_size,
-                        n_channels=n_channels,
-                        n_blocks=n_blocks,
-                        scaling_factor=scaling_factor)
-    srresnet = srresnet.to(device)
-    srresnet.load_state_dict(checkpoint['model'])
+    checkpoint = torch.load(interpolation_checkpoint)
+    generator = Generator(large_kernel_size=large_kernel_size,
+                          small_kernel_size=small_kernel_size,
+                          n_channels=n_channels,
+                          n_blocks=n_blocks,
+                          scaling_factor=scaling_factor)
+    generator = generator.to(device)
+    generator.load_state_dict(checkpoint)
 
-    srresnet.eval()
-    model = srresnet
+    generator.eval()
+    model = generator
 
     # 加载图像
     img = Image.open(imgPath, mode='r')
@@ -54,6 +54,6 @@ if __name__ == '__main__':
     with torch.no_grad():
         sr_img = model(lr_img).squeeze(0).cpu().detach()  # (1, 3, w*scale, h*scale), in [-1, 1]
         sr_img = convert_image(sr_img, source='[-1, 1]', target='pil')
-        sr_img.save('./results/test_resnet.png')
+        sr_img.save('./results/test_net_interpolation.png')
 
     print('用时  {:.3f} 秒'.format(time.time() - start))
