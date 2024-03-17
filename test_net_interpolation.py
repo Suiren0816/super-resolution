@@ -6,7 +6,7 @@ import time
 from PIL import Image
 
 # 测试图像
-imgPath = './results/test1.png'
+imgPath = './results/test.png'
 
 # 模型参数
 large_kernel_size = 9  # 第一层卷积和最后一层卷积的核大小
@@ -16,7 +16,7 @@ n_blocks = 16  # 残差模块数量
 scaling_factor = 4  # 放大比例
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# 插值mawen Mave怎么关闭你的连接，无法关闭 真的吗 真的 怎么关不掉  4090才能关
+# 插值参数
 
 alpha = debug.alpha
 
