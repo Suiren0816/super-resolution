@@ -5,7 +5,7 @@
 from PIL import Image, ImageStat
 import networkInterpolation
 
-alpha = networkInterpolation.alpha
+alpha = 0.7
 
 def getBrightness(img_path):
     img = Image.open(img_path).convert('L')

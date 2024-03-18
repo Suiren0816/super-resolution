@@ -41,9 +41,11 @@ vgg19_j = 4         # VGG19网络第j个卷积层
 beta = 1e-3         # 判别损失乘子
 lr = 1e-4           # 学习率
 
+truncated_value = 0.01 # 判别器参数截断值
+
 # 设备参数
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-ngpu = 1                 # 用来运行的gpu数量
+ngpu = 2                 # 用来运行的gpu数量
 cudnn.benchmark = True   # 对卷积进行加速
 writer = SummaryWriter() # 实时监控     使用命令 tensorboard --logdir runs  进行查看
 
@@ -70,8 +72,8 @@ def main():
     discriminator = discriminator.to(device)
 
     # 初始化优化器
-    optimizer_g = torch.optim.Adam(params=filter(lambda p: p.requires_grad,generator.parameters()),lr=lr)
-    optimizer_d = torch.optim.Adam(params=filter(lambda p: p.requires_grad,discriminator.parameters()),lr=lr)
+    optimizer_g = torch.optim.RMSprop(params=filter(lambda p: p.requires_grad,generator.parameters()),lr=lr)
+    optimizer_d = torch.optim.RMSprop(params=filter(lambda p: p.requires_grad,discriminator.parameters()),lr=lr)
 
     # 截断的VGG19网络用于计算损失函数
     truncated_vgg19 = TruncatedVGG19(i=vgg19_i, j=vgg19_j)
@@ -79,7 +81,8 @@ def main():
 
     # 损失函数
     content_loss_criterion = nn.SmoothL1Loss()
-    adversarial_loss_criterion = nn.BCEWithLogitsLoss()
+    # adversarial_loss_criterion = nn.BCEWithLogitsLoss()
+    adversarial_loss_criterion = nn.BCELoss()
 
     # 将数据移至默认设备
     generator = generator.to(device)
@@ -101,9 +104,9 @@ def main():
         optimizer_d.load_state_dict(checkpoint['optimizer_d'])
     
     # 单机多GPU训练
-    # if torch.cuda.is_available() and ngpu > 1:
-    #    generator = nn.DataParallel(generator, device_ids=list(range(ngpu)))
-    #    discriminator = nn.DataParallel(discriminator, device_ids=list(range(ngpu)))
+    if torch.cuda.is_available() and ngpu > 1:
+        generator = nn.DataParallel(generator, device_ids=list(range(ngpu)))
+        discriminator = nn.DataParallel(discriminator, device_ids=list(range(ngpu)))
 
     # 定制化的dataloaders
     train_dataset = SRDataset(data_folder,split='train',
@@ -193,6 +196,10 @@ def main():
             # 更新判别器
             optimizer_d.step()
 
+            # 截断判别器参数
+            for parm in discriminator.parameters():
+                parm.data.clamp(-truncated_value,truncated_value)
+
             # 记录损失
             losses_d.update(adversarial_loss.item(), hr_imgs.size(0))
 
@@ -204,7 +211,7 @@ def main():
 
             # 打印结果
 
-            print("第 "+str(i)+ " 个batch结束。Time used:{:.3f} 秒".format(time.time()-start_time))
+            # print("第 "+str(i)+ " 个batch结束。Time used:{:.3f} 秒".format(time.time()-start_time))
  
         # 手动释放内存              
         del lr_imgs, hr_imgs, sr_imgs, hr_imgs_in_vgg_space, sr_imgs_in_vgg_space, hr_discriminated, sr_discriminated  # 手工清除掉缓存
@@ -217,10 +224,11 @@ def main():
         progress = float(epoch) / float(epochs)
 
         # os.system('cls')
+        """
         print("epoch " + str(epoch) + " train finished! \n " +
                                       "process " + str(progress) +
                                       "Time used : {:.3f} 秒".format(time.time()-start_time))
-
+        """
         # 保存预训练模型
         torch.save({
             'epoch': epoch,
