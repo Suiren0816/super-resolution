@@ -3,7 +3,7 @@ from collections import OrderedDict
 import sys
 
 
-alpha = sys.argv[1] # 插值权重。
+alpha = float(sys.argv[1]) # 插值权重。
 """
 插值权重
 alpha = 0 仅使用ResNet网络参数
