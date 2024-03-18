@@ -224,11 +224,9 @@ def main():
         progress = float(epoch) / float(epochs)
 
         # os.system('cls')
-        """
         print("epoch " + str(epoch) + " train finished! \n " +
                                       "process " + str(progress) +
                                       "Time used : {:.3f} 秒".format(time.time()-start_time))
-        """
         # 保存预训练模型
         torch.save({
             'epoch': epoch,
