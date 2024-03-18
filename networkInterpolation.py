@@ -1,7 +1,9 @@
 import torch
 from collections import OrderedDict
+import sys
 
-alpha = 0.5 # 插值权重。
+
+alpha = sys.argv[1] # 插值权重。
 """
 插值权重
 alpha = 0 仅使用ResNet网络参数
@@ -23,6 +25,8 @@ model_model5 = OrderedDict()
 # 进行网络插值
 orderedDictResNetModelValue = model_srresnet['model']
 orderedDictGanModelValue = model_srgan['generator']
+
+
 """
 只需提取模型中的model里的参数
 """

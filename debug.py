@@ -3,7 +3,9 @@
 2024-3-13
 """
 from PIL import Image, ImageStat
+import networkInterpolation
 
+alpha = networkInterpolation.alpha
 
 def getBrightness(img_path):
     img = Image.open(img_path).convert('L')
@@ -15,5 +17,5 @@ if __name__ == '__main__':
     print(getBrightness(img_path))
     img_gan_path = './results/test_srgan.png'
     print(getBrightness(img_gan_path))
-    img_interpolation_path = './results/test_net_interpolation_alpha_0.8.png'
+    img_interpolation_path = './results/test_net_interpolation_alpha_' + str(alpha) + '.png'
     print(getBrightness(img_interpolation_path))
