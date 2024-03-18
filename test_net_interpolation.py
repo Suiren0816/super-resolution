@@ -1,4 +1,4 @@
-import debug
+import networkInterpolation
 from utils import *
 from torch import nn
 from models import SRResNet,Generator
@@ -18,7 +18,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # 插值参数
 
-alpha = debug.alpha
+alpha = networkInterpolation.alpha
 
 
 if __name__ == '__main__':
@@ -60,6 +60,6 @@ if __name__ == '__main__':
     with torch.no_grad():
         sr_img = model(lr_img).squeeze(0).cpu().detach()  # (1, 3, w*scale, h*scale), in [-1, 1]
         sr_img = convert_image(sr_img, source='[-1, 1]', target='pil')
-        sr_img.save('./results/test_net_interpolation_alpha_' + alpha + '.png')
+        sr_img.save('./results/test_net_interpolation_alpha_' + str(alpha) + '.png')
 
     print('用时  {:.3f} 秒'.format(time.time() - start))

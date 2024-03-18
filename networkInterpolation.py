@@ -1,7 +1,7 @@
 import torch
 from collections import OrderedDict
 
-alpha = 0.8 # 插值权重。
+alpha = 0.5 # 插值权重。
 """
 插值权重
 alpha = 0 仅使用ResNet网络参数
