@@ -14,7 +14,7 @@ class ConvolutionalBlock(nn.Module):
     卷积模块,由卷积层, BN归一化层, 激活层构成.
     """
 
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None, batch_norm=True):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None):
         """
         :参数 in_channels: 输入通道数
         :参数 out_channels: 输出通道数
@@ -37,8 +37,8 @@ class ConvolutionalBlock(nn.Module):
                       padding=kernel_size // 2))
 
         # 1个BN归一化层
-        if batch_norm is True:
-            layers.append(nn.BatchNorm2d(num_features=out_channels))
+        # if batch_norm is True:
+        #    layers.append(nn.BatchNorm2d(num_features=out_channels))
 
         # 1个激活层
         if activation == 'prelu':
