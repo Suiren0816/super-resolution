@@ -14,7 +14,7 @@ class ConvolutionalBlock(nn.Module):
     卷积模块,由卷积层, BN归一化层, 激活层构成.
     """
 
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None, batch_norm=True):
         """
         :参数 in_channels: 输入通道数
         :参数 out_channels: 输出通道数
@@ -37,8 +37,8 @@ class ConvolutionalBlock(nn.Module):
                       padding=kernel_size // 2))
 
         # 1个BN归一化层
-        # if batch_norm is True:
-            # layers.append(nn.BatchNorm2d(num_features=out_channels))
+        if batch_norm is True:
+            layers.append(nn.BatchNorm2d(num_features=out_channels))
 
         # 1个激活层
         if activation == 'prelu':
@@ -140,7 +140,7 @@ class RRDBBlock(nn.Module):
         super(RRDBBlock, self).__init__()
         """"5个卷积层，4个激活层"""
 
-        self.conv1 = ConvolutionalBlock(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
+        self.conv1 = ConvolutionalBlock(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None, batch_norm=False)
         self.conv2 = ConvolutionalBlock(in_channels=in_channels + out_channels, out_channels=out_channels,kernel_size=kernel_size, activation=None)
         self.conv3 = ConvolutionalBlock(in_channels=in_channels + 2 * out_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
         self.conv4 = ConvolutionalBlock(in_channels=in_channels + 3 * out_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
