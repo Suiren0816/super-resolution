@@ -7,6 +7,8 @@ import torch
 from torch import nn
 from torchvision.utils import make_grid
 from torch.utils.tensorboard import SummaryWriter
+
+import models
 from models import SRResNet
 from datasets import SRDataset
 from utils import *
@@ -25,7 +27,7 @@ n_blocks = 16           # 残差模块数量
 
 # 学习参数
 checkpoint = None   # 预训练模型路径，如果不存在则为None
-batch_size = 64    # 批大小
+batch_size = 128    # 批大小
 start_epoch = 1     # 轮数起始位置
 epochs = 128        # 迭代轮数
 workers = 4         # 工作线程数
@@ -33,7 +35,7 @@ lr = 1e-4           # 学习率
 
 # 设备参数
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-ngpu = 1           # 用来运行的gpu数量
+ngpu = 2           # 用来运行的gpu数量
 
 cudnn.benchmark = True # 对卷积进行加速
 
@@ -59,7 +61,7 @@ def main():
 
     # 迁移至默认设备进行训练
     model = model.to(device)
-    criterion = nn.SmoothL1Loss().to(device)
+    criterion = models.L1_Charbonnier_loss().to(device)
 
     # 加载预训练模型
     if checkpoint is not None:

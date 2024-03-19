@@ -6,6 +6,8 @@ import torch
 from torch import nn
 from torchvision.utils import make_grid
 from torch.utils.tensorboard import SummaryWriter
+
+import models
 from models import Generator, Discriminator, TruncatedVGG19
 from datasets import SRDataset
 from utils import *
@@ -31,7 +33,7 @@ fc_size_d = 1024  # 全连接层连接数
 
 
 # 学习参数
-batch_size = 64    # 批大小
+batch_size = 128    # 批大小
 start_epoch = 1     # 迭代起始位置
 epochs = 50         # 迭代轮数
 checkpoint = None   # SRGAN预训练模型, 如果没有则填None
@@ -79,7 +81,7 @@ def main():
     truncated_vgg19.eval()
 
     # 损失函数
-    content_loss_criterion = nn.SmoothL1Loss()
+    content_loss_criterion = models.L1_Charbonnier_loss()
     adversarial_loss_criterion = nn.BCEWithLogitsLoss()
 
     # 将数据移至默认设备
