@@ -140,7 +140,7 @@ class RRDBBlock(nn.Module):
         super(RRDBBlock, self).__init__()
         """"5个卷积层，4个激活层"""
 
-        self.conv1 = ConvolutionalBlock(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None, batch_norm=False)
+        self.conv1 = ConvolutionalBlock(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
         self.conv2 = ConvolutionalBlock(in_channels=in_channels + out_channels, out_channels=out_channels,kernel_size=kernel_size, activation=None)
         self.conv3 = ConvolutionalBlock(in_channels=in_channels + 2 * out_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
         self.conv4 = ConvolutionalBlock(in_channels=in_channels + 3 * out_channels, out_channels=out_channels, kernel_size=kernel_size, activation=None)
