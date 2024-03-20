@@ -27,7 +27,7 @@ n_blocks = 16           # 残差模块数量
 
 # 学习参数
 checkpoint = None   # 预训练模型路径，如果不存在则为None
-batch_size = 128    # 批大小
+batch_size = 64    # 批大小
 start_epoch = 1     # 轮数起始位置
 epochs = 128        # 迭代轮数
 workers = 4         # 工作线程数
@@ -61,7 +61,7 @@ def main():
 
     # 迁移至默认设备进行训练
     model = model.to(device)
-    criterion = nn.SmoothL1Loss.to(device)
+    criterion = nn.SmoothL1Loss().to(device)
 
     # 加载预训练模型
     if checkpoint is not None:
