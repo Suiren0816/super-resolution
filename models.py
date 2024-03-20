@@ -35,8 +35,8 @@ class ConvolutionalBlock(nn.Module):
         # 添加SN层
         # layers.append(nn.utils.spectral_norm(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
         #              padding=kernel_size // 2)))
-        layers.append(nn.Conv2d(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
-                      padding=kernel_size // 2)))
+        layers.append(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
+                      padding=kernel_size // 2))
 
         # 1个BN归一化层
         # if batch_norm is True:
