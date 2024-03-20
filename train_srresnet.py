@@ -137,7 +137,7 @@ def main():
         # 保存预训练模型
         torch.save({
             'epoch': epoch,
-            'model': model.state_dict(),
+            'model': model.module.state_dict(),
             'optimizer': optimizer.state_dict()
         }, 'results/checkpoint_srresnet.pth')
 

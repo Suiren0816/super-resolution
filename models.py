@@ -130,7 +130,7 @@ class ResidualBlock(nn.Module):
         residual = input  # (N, n_channels, w, h)
         output = self.conv_block1(input)  # (N, n_channels, w, h)
         output = self.conv_block2(output)  # (N, n_channels, w, h)
-        output = output + residual  # (N, n_channels, w, h)
+        output = output + residual  # (N, n_channels, w, h)，使用shorcut connection
 
         return output
 
