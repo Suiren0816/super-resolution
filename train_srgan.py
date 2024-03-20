@@ -33,7 +33,7 @@ fc_size_d = 1024  # 全连接层连接数
 
 
 # 学习参数
-batch_size = 128    # 批大小
+batch_size = 256    # 批大小
 start_epoch = 1     # 迭代起始位置
 epochs = 50         # 迭代轮数
 checkpoint = None   # SRGAN预训练模型, 如果没有则填None
@@ -226,8 +226,8 @@ def main():
         # 保存预训练模型
         torch.save({
             'epoch': epoch,
-            'generator': generator.state_dict(),
-            'discriminator': discriminator.state_dict(),
+            'generator': generator.module.state_dict(),
+            'discriminator': discriminator.module.state_dict(),
             'optimizer_g': optimizer_g.state_dict(),
             'optimizer_d': optimizer_d.state_dict(),
         }, 'results/checkpoint_srgan.pth')

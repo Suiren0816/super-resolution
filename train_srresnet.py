@@ -27,9 +27,9 @@ n_blocks = 16           # 残差模块数量
 
 # 学习参数
 checkpoint = None   # 预训练模型路径，如果不存在则为None
-batch_size = 128    # 批大小
+batch_size = 256    # 批大小
 start_epoch = 1     # 轮数起始位置
-epochs = 256        # 迭代轮数
+epochs = 128        # 迭代轮数
 workers = 4         # 工作线程数
 lr = 1e-4           # 学习率
 
@@ -126,7 +126,7 @@ def main():
                 writer.add_image('SRResNet/epoch_'+str(epoch)+'_3', make_grid(hr_imgs[:4,:3,:,:].cpu(), nrow=4, normalize=True),epoch)
 
             # 打印结果
-            print("第 "+str(i)+ " 个batch结束。Time used:{:.3f} 秒".format(time.time()-start_time))
+            # print("第 "+str(i)+ " 个batch结束。Time used:{:.3f} 秒".format(time.time()-start_time))
  
         # 手动释放内存              
         del lr_imgs, hr_imgs, sr_imgs
