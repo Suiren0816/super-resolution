@@ -27,9 +27,9 @@ n_blocks = 16           # 残差模块数量
 
 # 学习参数
 checkpoint = None   # 预训练模型路径，如果不存在则为None
-batch_size = 64    # 批大小
+batch_size = 128    # 批大小
 start_epoch = 1     # 轮数起始位置
-epochs = 128        # 迭代轮数
+epochs = 256        # 迭代轮数
 workers = 4         # 工作线程数
 lr = 1e-4           # 学习率
 
@@ -57,7 +57,7 @@ def main():
                         n_blocks=n_blocks,
                         scaling_factor=scaling_factor)
     # 初始化优化器
-    optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()),lr=lr)
+    optimizer = torch.optim.RMSprop(params=filter(lambda p: p.requires_grad, model.parameters()),lr=lr)
 
     # 迁移至默认设备进行训练
     model = model.to(device)
