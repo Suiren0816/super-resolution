@@ -61,7 +61,7 @@ def main():
 
     # 迁移至默认设备进行训练
     model = model.to(device)
-    criterion = models.L1_Charbonnier_loss().to(device)
+    criterion = nn.SmoothL1Loss.to(device)
 
     # 加载预训练模型
     if checkpoint is not None:

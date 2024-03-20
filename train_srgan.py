@@ -81,7 +81,7 @@ def main():
     truncated_vgg19.eval()
 
     # 损失函数
-    content_loss_criterion = models.L1_Charbonnier_loss()
+    content_loss_criterion = nn.SmoothL1Loss()
     adversarial_loss_criterion = nn.BCEWithLogitsLoss()
 
     # 将数据移至默认设备
