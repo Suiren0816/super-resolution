@@ -14,7 +14,7 @@ class ConvolutionalBlock(nn.Module):
     卷积模块,由卷积层, BN归一化层, 激活层构成.
     """
 
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None, spectrum_norm = False):
         """
         :参数 in_channels: 输入通道数
         :参数 out_channels: 输出通道数
@@ -33,9 +33,11 @@ class ConvolutionalBlock(nn.Module):
 
         # 1个卷积层
         # 添加SN层
-        # layers.append(nn.utils.spectral_norm(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
-        #              padding=kernel_size // 2)))
-        layers.append(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
+        if spectrum_norm:
+            layers.append(nn.utils.spectral_norm(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
+                      padding=kernel_size // 2)))
+        else:
+            layers.append(nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride,
                       padding=kernel_size // 2))
 
         # 1个BN归一化层
@@ -292,7 +294,7 @@ class Discriminator(nn.Module):
             out_channels = (n_channels if i is 0 else in_channels * 2) if i % 2 is 0 else in_channels
             conv_blocks.append(
                 ConvolutionalBlock(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size,
-                                   stride=1 if i % 2 is 0 else 2, activation='LeakyReLu'))
+                                   stride=1 if i % 2 is 0 else 2, activation='LeakyReLu',spectrum_norm=True))
             in_channels = out_channels
         self.conv_blocks = nn.Sequential(*conv_blocks)
 
