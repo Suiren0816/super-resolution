@@ -5,7 +5,7 @@ import time
 from PIL import Image
 
 # 测试图像
-imgPath = './results/test1.png'
+imgPath = './results/test.png'
 
 # 模型参数
 large_kernel_size = 9  # 第一层卷积和最后一层卷积的核大小
