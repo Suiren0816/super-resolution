@@ -24,7 +24,7 @@ if __name__ == '__main__':
     
     # 测试集目录
     data_folder = "./data/"
-    test_data_names = ["testdata","test"]
+    test_data_names = ["test"]
 
     # 预训练模型
     srgan_checkpoint = "./results/checkpoint_srgan.pth"
