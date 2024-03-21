@@ -14,7 +14,7 @@ class ConvolutionalBlock(nn.Module):
     卷积模块,由卷积层, BN归一化层, 激活层构成.
     """
 
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None, spectrum_norm = False):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, activation=None, spectrum_norm = True):
         """
         :参数 in_channels: 输入通道数
         :参数 out_channels: 输出通道数
@@ -202,7 +202,7 @@ class SRResNet(nn.Module):
 
         # 第一个卷积块
         self.conv_block1 = ConvolutionalBlock(in_channels=3, out_channels=n_channels, kernel_size=large_kernel_size,
-                                              activation='PReLu')
+                                              activation='PReLu',spectrum_norm=True)
 
         # 一系列残差模块, 每个残差模块包含一个跳连接
         # 替换为Residual in Residual Dense Block
@@ -212,7 +212,7 @@ class SRResNet(nn.Module):
         # 第二个卷积块
         self.conv_block2 = ConvolutionalBlock(in_channels=n_channels, out_channels=n_channels,
                                               kernel_size=small_kernel_size,
-                                              activation=None)
+                                              activation=None,spectrum_norm=True)
 
         # 放大通过子像素卷积模块实现, 每个模块放大两倍
         n_subpixel_convolution_blocks = int(math.log2(scaling_factor))
@@ -222,7 +222,7 @@ class SRResNet(nn.Module):
 
         # 最后一个卷积模块
         self.conv_block3 = ConvolutionalBlock(in_channels=n_channels, out_channels=3, kernel_size=large_kernel_size,
-                                              activation='Tanh')
+                                              activation='Tanh',spectrum_norm=True)
 
     def forward(self, lr_imgs):
         """
