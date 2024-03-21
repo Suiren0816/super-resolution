@@ -8,7 +8,7 @@ if __name__ == '__main__':
     create_data_lists(train_folders=['./data/dataset',
                                      './data/dataset2',
                                      './data/dataset3'],
-                      test_folders=[
+                      test_folders=['/data/test'
                                     ],
                       min_size=100,
                       output_folder='./data/')
