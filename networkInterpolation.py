@@ -63,8 +63,7 @@ def generateNetworkInterpolation(alpha,model_path):
     print('用时  {:.3f} 秒'.format(time.time() - start))
 
 def main():
-    print("0-100")
-    alpha = float(sys.argv[1]) / 100.0  # 插值权重。
+    alpha = float(sys.argv[1]) / 10.0  # 插值权重。
     """
     插值权重
     alpha = 0 仅使用ResNet网络参数
