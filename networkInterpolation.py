@@ -63,11 +63,12 @@ def generateNetworkInterpolation(alpha,model_path):
     print('用时  {:.3f} 秒'.format(time.time() - start))
 
 def main():
-    alpha = float(sys.argv[1])  # 插值权重。
+    print("0-100")
+    alpha = float(sys.argv[1]) / 100.0  # 插值权重。
     """
     插值权重
     alpha = 0 仅使用ResNet网络参数
-    alpha = 1 仅使用GAN网络参数
+    alpha = 100 仅使用GAN网络参数
     """
 
     model_srgan_path = './results/checkpoint_srgan.pth'
