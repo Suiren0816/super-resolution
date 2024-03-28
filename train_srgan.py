@@ -41,7 +41,8 @@ workers = 4         # 加载数据线程数量
 vgg19_i = 5         # VGG19网络第i个池化层
 vgg19_j = 4         # VGG19网络第j个卷积层
 beta = 1e-3         # 判别损失乘子
-lr = 1e-4           # 学习率
+lr_g = 1e-4         # 生成器学习率
+lr_d = 4e-4         # 判别器学习率
 
 
 # 设备参数
@@ -73,8 +74,8 @@ def main():
     discriminator = discriminator.to(device)
 
     # 初始化优化器
-    optimizer_g = torch.optim.Adam(params=filter(lambda p: p.requires_grad,generator.parameters()),lr=lr)
-    optimizer_d = torch.optim.Adam(params=filter(lambda p: p.requires_grad,discriminator.parameters()),lr=lr)
+    optimizer_g = torch.optim.RMSprop(params=filter(lambda p: p.requires_grad,generator.parameters()),lr=lr_g)
+    optimizer_d = torch.optim.Adam(params=filter(lambda p: p.requires_grad,discriminator.parameters()),lr=lr_d)
 
     # 截断的VGG19网络用于计算损失函数
     truncated_vgg19 = TruncatedVGG19(i=vgg19_i, j=vgg19_j)
