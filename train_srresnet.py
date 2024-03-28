@@ -35,7 +35,7 @@ lr = 1e-4           # 学习率
 
 # 设备参数
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-ngpu = 2           # 用来运行的gpu数量
+ngpu = 1           # 用来运行的gpu数量
 
 cudnn.benchmark = True # 对卷积进行加速
 
@@ -135,7 +135,7 @@ def main():
         # 保存预训练模型
         torch.save({
             'epoch': epoch,
-            'model': model.module.state_dict(),
+            'model': model.state_dict(),
             'optimizer': optimizer.state_dict()
         }, 'results/checkpoint_srresnet.pth')
 

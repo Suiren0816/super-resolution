@@ -74,8 +74,8 @@ def main():
     discriminator = discriminator.to(device)
 
     # 初始化优化器
-    optimizer_g = torch.optim.RMSprop(params=filter(lambda p: p.requires_grad,generator.parameters()),lr=lr_g)
-    optimizer_d = torch.optim.Adam(params=filter(lambda p: p.requires_grad,discriminator.parameters()),lr=lr_d)
+    optimizer_g = torch.optim.Adam(params=filter(lambda p: p.requires_grad,generator.parameters()),lr=lr_g)
+    optimizer_d = torch.optim.RMSprop(params=filter(lambda p: p.requires_grad,discriminator.parameters()),lr=lr_d)
 
     # 截断的VGG19网络用于计算损失函数
     truncated_vgg19 = TruncatedVGG19(i=vgg19_i, j=vgg19_j)
