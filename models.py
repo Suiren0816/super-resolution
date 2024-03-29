@@ -223,7 +223,9 @@ class SRResNet(nn.Module):
         # 最后一个卷积模块
         self.conv_block3 = ConvolutionalBlock(in_channels=n_channels, out_channels=3, kernel_size=large_kernel_size,
                                               activation='Tanh',spectrum_norm=True)
-
+        # 注意力层
+        self.attention1 = selfAttentionLayer(n_channels=128,activation='relu')
+        self.attention2 = selfAttentionLayer(n_channels=64,activation='relu')
     def forward(self, lr_imgs):
         """
         前向传播.
@@ -236,7 +238,10 @@ class SRResNet(nn.Module):
         output = self.residual_blocks(output)  # (16, 64, 24, 24)
         output = self.conv_block2(output)  # (16, 64, 24, 24)
         output = output + residual  # (16, 64, 24, 24)
+        output = self.attention1(output)
+        output = self.attention2(output)
         output = self.subpixel_convolutional_blocks(output)  # (16, 64, 24 * 4, 24 * 4)
+
         sr_imgs = self.conv_block3(output)  # (16, 3, 24 * 4, 24 * 4)
 
         return sr_imgs
@@ -390,4 +395,33 @@ class L1_Charbonnier_loss(torch.nn.Module):
         error = torch.sqrt(diff * diff + self.eps)
         loss = torch.mean(error)
         return loss
+
+class selfAttentionLayer(torch.nn.Module):
+    def __init__(self, n_channels, activation):
+        super(selfAttentionLayer, self).__init__()
+        self.n_channels = n_channels
+        self.activation = activation
+
+        self.query_conv = nn.Conv2d(in_channels=n_channels, out_channels= n_channels//8, kernel_size=1)
+        self.key_conv = nn.Conv2d(in_channels=n_channels, out_channels= n_channels//8, kernel_size=1)
+        self.value_conv = nn.Conv2d(in_channels=n_channels, out_channels= n_channels, kernel_size=1)
+        self.gamma = nn.Parameter(torch.zeors(1))
+
+        self.softmax = nn.Softmax(dim=-1)
+
+    def forward(self, input):
+        m_batch = input.size(0)
+        c_batch = input.size(1)
+        width = input.size(2)
+        height = input.size(3)
+
+        proj_query = self.query_conv(input).view(m_batch, -1, width*height).permute(0,2,1)
+        proj_key = self.key_conv(input).view(m_batch, -1, width*height)
+        energy = torch.bmm(proj_query,proj_key)
+        attention_weights = self.softmax(energy)
+        proj_value = self.value_conv(input).view(m_batch,-1,width*height)
+
+        out = torch.bmm(proj_value, attention_weights.permute(0,2,1))
+        out = self.gamma * out
+        return out
 
