@@ -224,7 +224,7 @@ class SRResNet(nn.Module):
         self.conv_block3 = ConvolutionalBlock(in_channels=n_channels, out_channels=3, kernel_size=large_kernel_size,
                                               activation='Tanh',spectrum_norm=True)
         # 注意力层
-        self.attention1 = selfAttentionLayer(n_channels=128,activation='relu')
+        self.attention1 = selfAttentionLayer(n_channels=64,activation='relu')
         self.attention2 = selfAttentionLayer(n_channels=64,activation='relu')
     def forward(self, lr_imgs):
         """
