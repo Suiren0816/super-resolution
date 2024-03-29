@@ -410,11 +410,7 @@ class selfAttentionLayer(torch.nn.Module):
         self.softmax = nn.Softmax(dim=-1)
 
     def forward(self, input):
-        m_batch = input.size(0)
-        c_batch = input.size(1)
-        width = input.size(2)
-        height = input.size(3)
-
+        m_batch, c_batch, width, height = input.size()
         proj_query = self.query_conv(input).view(m_batch, -1, width*height).permute(0,2,1)
         proj_key = self.key_conv(input).view(m_batch, -1, width*height)
         energy = torch.bmm(proj_query,proj_key)
@@ -422,6 +418,7 @@ class selfAttentionLayer(torch.nn.Module):
         proj_value = self.value_conv(input).view(m_batch,-1,width*height)
 
         out = torch.bmm(proj_value, attention_weights.permute(0,2,1))
+        out = out.view(m_batch, c_batch, width, height)
         out = self.gamma * out
         return out
 
