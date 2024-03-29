@@ -405,7 +405,7 @@ class selfAttentionLayer(torch.nn.Module):
         self.query_conv = nn.Conv2d(in_channels=n_channels, out_channels= n_channels//8, kernel_size=1)
         self.key_conv = nn.Conv2d(in_channels=n_channels, out_channels= n_channels//8, kernel_size=1)
         self.value_conv = nn.Conv2d(in_channels=n_channels, out_channels= n_channels, kernel_size=1)
-        self.gamma = nn.Parameter(torch.zeors(1))
+        self.gamma = nn.Parameter(torch.zeros(1))
 
         self.softmax = nn.Softmax(dim=-1)
 
