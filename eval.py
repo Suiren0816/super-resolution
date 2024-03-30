@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
-
+from PIL import ImageStat
 
 from utils import *
 from torch import nn
@@ -9,6 +8,7 @@ from skimage.metrics import peak_signal_noise_ratio, structural_similarity
 from datasets import SRDataset
 from models import SRResNet,Generator
 import time
+from torch.utils.tensorboard import SummaryWriter
 
 # 模型参数
 large_kernel_size = 9   # 第一层卷积和最后一层卷积的核大小
@@ -18,6 +18,13 @@ n_blocks = 16           # 残差模块数量
 scaling_factor = 4      # 放大比例
 ngpu = 1                # GPU数量
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+writer = SummaryWriter()
+
+def getBrightness(img_path):
+    img = Image.open(img_path).convert('L')
+    stat = ImageStat.Stat(img)
+    return stat.mean[0]
 
 
 if __name__ == '__main__':
@@ -92,6 +99,10 @@ if __name__ == '__main__':
                                             data_range=255.)
                 PSNRs.update(psnr, lr_imgs.size(0))
                 SSIMs.update(ssim, lr_imgs.size(0))
+
+                writer.add_scalar('SR Image Average Brightness Difference',
+                                  getBrightness(hr_imgs_y.cpu().numpy())-getBrightness(sr_imgs_y))
+
 
 
 
